@@ -65,7 +65,14 @@ public class Tetramino : MonoBehaviour
 
     public void InitAsI(float scale)
     {
+        Init(4, scale);
 
+        minoExists[1, 0] = true;
+        minoExists[1, 1] = true;
+        minoExists[1, 2] = true;
+        minoExists[1, 3] = true;
+
+        InstantiateMinos(new Vector2(-1.5f * tileSize, 1.5f * tileSize), new Color(0.68f, 0.85f, 0.90f));
     }
 
     public void InitAsT(float scale)

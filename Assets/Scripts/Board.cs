@@ -60,6 +60,9 @@ public class Board : MonoBehaviour
 
         Tetramino Z = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + 5 * posOffset, topLeft.y - 17 * posOffset, 0), Quaternion.identity);
         Z.InitAsZ(tileScale);
+
+        Tetramino I = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + 7 * posOffset / 2, topLeft.y - 13 * posOffset / 2, 0), Quaternion.identity);
+        I.InitAsI(tileScale);
     }
 
     
