@@ -96,7 +96,7 @@ public class Board : MonoBehaviour
         int col = 1;
         curPiece = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + col * posOffset, topLeft.y - row * posOffset, 0), Quaternion.identity);
 
-        switch (qIndex)
+        switch (instantiateQueue[qIndex])
         {
             case 0:
                 curPiece.InitAsO(tileScale, row, col, minoExists);
