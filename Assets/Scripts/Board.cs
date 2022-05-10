@@ -8,9 +8,12 @@ public class Board : MonoBehaviour
     Mino minoPrefab;
 
     [SerializeField]
+    Tetramino tetraminoPrefab;
+
+    [SerializeField]
     float tileScale;
 
-    Vector2 topLeft = new Vector2(-2.5f, 6.25f);
+    Vector2 topLeft = new Vector2(-2.0f, 5.75f);
     float tileSize = 1f;
 
     int nCols = 10;
@@ -21,23 +24,27 @@ public class Board : MonoBehaviour
     {
         board = new Mino[nRows, nCols];
 
-        float posChange = tileSize * tileScale;
+        float posOffset = tileSize * tileScale;
 
-        float y = topLeft.y - tileSize / 2;
+        float y = topLeft.y;
         for(int i = 0; i < nRows; ++i)
         {
-            float x = topLeft.x + tileSize / 2;
+            float x = topLeft.x;
             for(int j = 0; j < nCols; ++j)
             {
                 Mino mino = Instantiate(minoPrefab, new Vector3(x, y, 0), Quaternion.identity);
-                mino.MinoColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
                 mino.SetScale(tileScale);
-                x += posChange;
+                x += posOffset;
 
                 board[i, j] = mino;
             }
-            y -= posChange;
+            y -= posOffset;
         }
+
+        int row = 3;
+        int col = 1;
+        Tetramino T = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + col * posOffset, topLeft.y - row * posOffset, 0), Quaternion.identity);
+        T.InitAsT(tileScale);
     }
 
     

@@ -11,14 +11,14 @@ public class Mino : MonoBehaviour
         set
         {
             color = value;
-            spriteRenderer.color = color;
+            bodySprite.color = color;
         } 
     }
 
-    SpriteRenderer spriteRenderer;
+    SpriteRenderer bodySprite;
     void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        bodySprite = transform.Find("Body").GetComponent<SpriteRenderer>();
     }
 
     public void SetScale(float newScale)

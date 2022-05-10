@@ -250,4 +250,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minoPrefab: {fileID: 2879770604827132472, guid: cd90b4b536ae7b94a91d8ca277a20edd, type: 3}
+  tetraminoPrefab: {fileID: 5737491792307580905, guid: 43efabbecd1497f4e8677f86ad8f75c9, type: 3}
   tileScale: 0.5
