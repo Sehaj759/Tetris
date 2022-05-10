@@ -17,6 +17,12 @@ public class Tetramino : MonoBehaviour
     float dropTime = 0.55f;
     float curTime = 0;
 
+    int row;
+    int col;
+    bool[,] board;
+
+    bool setupComplete = false;
+
     void Start()
     {
         pos = transform.position;
@@ -24,19 +30,127 @@ public class Tetramino : MonoBehaviour
 
     void Update()
     {
-        float deltaTime = Time.deltaTime;
-        curTime += deltaTime;
-        if(curTime >= dropTime)
+        if (setupComplete)
         {
-            pos.y -= tileSize;
-            curTime = 0;
+            float deltaTime = Time.deltaTime;
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                MoveLeft();
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                MoveRight();
+            }
+
+            Drop(deltaTime);
+
+            transform.position = pos;
         }
-        transform.position = pos;
     }
 
-    void Init(int size, float scale)
+    void MoveLeft()
+    {
+        // Find LeftMost Column in minoExists that has minos
+        int leftCol = 0;
+        for(int c = 0; c < minoExists.GetLength(1); ++c)
+        {
+            bool hasMino = false;
+            for(int r = 0; r < minoExists.GetLength(0); ++r)
+            {
+                if(minoExists[r, c])
+                {
+                    hasMino = true;
+                    break;
+                }
+            }
+
+            if (hasMino)
+            {
+                leftCol = c;
+                break;
+            }
+        }
+
+        if ((col - leftCol) > 0)
+        {
+            pos.x -= scale * tileSize;
+            col--;
+        }
+    }
+
+    void MoveRight()
+    {
+        // Find RightMost Column in minoExists that has minos
+        int rightCol = minoExists.GetLength(1) - 1;
+        for (int c = minoExists.GetLength(1) - 1; c >= 0 ; --c)
+        {
+            bool hasMino = false;
+            for (int r = 0; r < minoExists.GetLength(0); ++r)
+            {
+                if (minoExists[r, c])
+                {
+                    hasMino = true;
+                    break;
+                }
+            }
+
+            if (hasMino)
+            {
+                rightCol = c;
+                break;
+            }
+        }
+
+        if ((col + rightCol) < board.GetLength(1) - 1)
+        {
+            pos.x += scale * tileSize;
+            col++;
+        }
+    }
+
+    void Drop(float deltaTime)
+    {
+
+        curTime += deltaTime;
+        if (curTime >= dropTime)
+        {
+            // Find Botoom most Row in minoExists that has minos
+            int bottomRow = minoExists.GetLength(0) - 1;
+            for (int r = minoExists.GetLength(0) - 1; r >= 0; --r)
+            {
+                bool hasMino = false;
+                for (int c = 0; c < minoExists.GetLength(1); ++c)
+                {
+                    if (minoExists[r, c])
+                    {
+                        hasMino = true;
+                        break;
+                    }
+                }
+
+                if (hasMino)
+                {
+                    bottomRow = r;
+                    break;
+                }
+            }
+
+            if ((row + bottomRow) < board.GetLength(0) - 1)
+            {
+                pos.y -= scale * tileSize;
+                row++;
+            }
+            curTime = 0;
+        }
+    }
+
+    void Init(int size, float scale, int initRow, int initCol, bool[,] board)
     {
         this.scale = scale;
+        row = initRow;
+        col = initCol;
+        this.board = board;
         minoExists = new bool[size, size];
         minos = new Mino[4];
         for (int i = 0; i < size; ++i)
@@ -61,11 +175,13 @@ public class Tetramino : MonoBehaviour
         SetMinoPositions(topLeftTileCenter);
 
         transform.localScale = new Vector3(scale, scale, 1);
+
+        setupComplete = true;
     }
 
-    public void InitAsO(float scale)
+    public void InitAsO(float scale, int initRow, int initCol, bool[,] board)
     {
-        Init(3, scale);
+        Init(3, scale, initRow, initCol, board);
 
         minoExists[0, 1] = true;
         minoExists[0, 2] = true;
@@ -75,9 +191,9 @@ public class Tetramino : MonoBehaviour
         InstantiateMinos(new Vector2(-tileSize, tileSize), Color.yellow);
     }
 
-    public void InitAsI(float scale)
+    public void InitAsI(float scale, int initRow, int initCol, bool[,] board)
     {
-        Init(4, scale);
+        Init(4, scale, initRow, initCol, board);
 
         minoExists[1, 0] = true;
         minoExists[1, 1] = true;
@@ -87,9 +203,9 @@ public class Tetramino : MonoBehaviour
         InstantiateMinos(new Vector2(-1.5f * tileSize, 1.5f * tileSize), new Color(0.68f, 0.85f, 0.90f));
     }
 
-    public void InitAsT(float scale)
+    public void InitAsT(float scale, int initRow, int initCol, bool[,] board)
     {
-        Init(3, scale);
+        Init(3, scale, initRow, initCol, board);
 
         minoExists[0, 1] = true;
         minoExists[1, 0] = true;
@@ -99,9 +215,9 @@ public class Tetramino : MonoBehaviour
         InstantiateMinos(new Vector2(-tileSize, tileSize), new Color(0.5f, 0, 0.5f));
     }
 
-    public void InitAsL(float scale)
+    public void InitAsL(float scale, int initRow, int initCol, bool[,] board)
     {
-        Init(3, scale);
+        Init(3, scale, initRow, initCol, board);
 
         minoExists[0, 2] = true;
         minoExists[1, 0] = true;
@@ -111,9 +227,9 @@ public class Tetramino : MonoBehaviour
         InstantiateMinos(new Vector2(-tileSize, tileSize), new Color(1, 0.65f, 0));
     }
 
-    public void InitAsJ(float scale)
+    public void InitAsJ(float scale, int initRow, int initCol, bool[,] board)
     {
-        Init(3, scale);
+        Init(3, scale, initRow, initCol, board);
 
         minoExists[0, 0] = true;
         minoExists[1, 0] = true;
@@ -122,9 +238,9 @@ public class Tetramino : MonoBehaviour
 
         InstantiateMinos(new Vector2(-tileSize, tileSize), new Color(0, 0, 0.55f));
     }
-    public void InitAsS(float scale)
+    public void InitAsS(float scale, int initRow, int initCol, bool[,] board)
     {
-        Init(3, scale);
+        Init(3, scale, initRow, initCol, board);
 
         minoExists[0, 1] = true;
         minoExists[0, 2] = true;
@@ -133,9 +249,9 @@ public class Tetramino : MonoBehaviour
 
         InstantiateMinos(new Vector2(-tileSize, tileSize), Color.green);
     }
-    public void InitAsZ(float scale)
+    public void InitAsZ(float scale, int initRow, int initCol, bool[,] board)
     {
-        Init(3, scale);
+        Init(3, scale, initRow, initCol, board);
 
         minoExists[0, 0] = true;
         minoExists[0, 1] = true;
@@ -154,7 +270,7 @@ public class Tetramino : MonoBehaviour
             {
                 if(minoExists[i, j])
                 {
-                    minos[minoIndex].transform.localPosition = new Vector3(topLeftTileCenter.x + j * tileSize, topLeftTileCenter.y - i * tileSize, 0);
+                    minos[minoIndex].transform.localPosition = new Vector3(j * tileSize, -i * tileSize, 0);
                     ++minoIndex;
                 }
             }

@@ -20,10 +20,13 @@ public class Board : MonoBehaviour
     int nRows = 22; // 1st and 2nd row are the buffer rows where the tetraminos will be initially created
 
     Mino[,] board;
+    bool[,] minoExists;
+    Tetramino curPiece;
+
     void Start()
     {
         board = new Mino[nRows, nCols];
-
+        minoExists = new bool[nRows, nCols];
         float posOffset = tileSize * tileScale;
 
         float y = topLeft.y;
@@ -36,33 +39,15 @@ public class Board : MonoBehaviour
                 mino.SetScale(tileScale);
                 x += posOffset;
 
-                board[i, j] = mino;
+                minoExists[i, j] = false;
             }
             y -= posOffset;
         }
 
         int row = 3;
         int col = 1;
-        Tetramino T = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + col * posOffset, topLeft.y - row * posOffset, 0), Quaternion.identity);
-        T.InitAsT(tileScale);
-
-        Tetramino O = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + 5 * posOffset, topLeft.y - 8 * posOffset, 0), Quaternion.identity);
-        O.InitAsO(tileScale);
-
-        Tetramino L = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + 9 * posOffset, topLeft.y - 14 * posOffset, 0), Quaternion.identity);
-        L.InitAsL(tileScale);
-
-        Tetramino J = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + 1 * posOffset, topLeft.y - 19 * posOffset, 0), Quaternion.identity);
-        J.InitAsJ(tileScale);
-
-        Tetramino S = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + 4 * posOffset, topLeft.y - 11 * posOffset, 0), Quaternion.identity);
-        S.InitAsS(tileScale);
-
-        Tetramino Z = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + 5 * posOffset, topLeft.y - 17 * posOffset, 0), Quaternion.identity);
-        Z.InitAsZ(tileScale);
-
-        Tetramino I = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + 7 * posOffset / 2, topLeft.y - 13 * posOffset / 2, 0), Quaternion.identity);
-        I.InitAsI(tileScale);
+        curPiece = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + col * posOffset, topLeft.y - row * posOffset, 0), Quaternion.identity);
+        curPiece.InitAsT(tileScale, row, col, minoExists);
     }
 
     
