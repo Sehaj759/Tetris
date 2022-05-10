@@ -39,6 +39,7 @@ public class Board : MonoBehaviour
                 mino.SetScale(tileScale);
                 x += posOffset;
 
+                board[i, j] = mino;
                 minoExists[i, j] = false;
             }
             y -= posOffset;
@@ -53,6 +54,18 @@ public class Board : MonoBehaviour
     
     void Update()
     {
-        
+        int[,] storeIndices;
+        if (curPiece && curPiece.Store(out storeIndices))
+        {
+            for(int i = 0; i < storeIndices.GetLength(0); ++i)
+            {
+                int row = storeIndices[i, 0];
+                int col = storeIndices[i, 1];
+                minoExists[row, col] = true;
+                board[row, col].MinoColor = curPiece.TetraMinoColor;
+                curPiece.gameObject.SetActive(false);
+                Destroy(curPiece);
+            }
+        }
     }
 }

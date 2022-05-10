@@ -16,12 +16,15 @@ public class Tetramino : MonoBehaviour
 
     float dropTime = 0.55f;
     float curTime = 0;
+    bool canDrop = true;
 
     int row;
     int col;
     bool[,] board;
 
     bool setupComplete = false;
+
+    public Color TetraMinoColor { get => minos[0].MinoColor; }
 
     void Start()
     {
@@ -111,6 +114,8 @@ public class Tetramino : MonoBehaviour
 
     void Drop(float deltaTime)
     {
+        if (!canDrop)
+            return;
 
         curTime += deltaTime;
         if (curTime >= dropTime)
@@ -140,6 +145,10 @@ public class Tetramino : MonoBehaviour
             {
                 pos.y -= scale * tileSize;
                 row++;
+            }
+            else
+            {
+                canDrop = false;
             }
             curTime = 0;
         }
@@ -275,5 +284,32 @@ public class Tetramino : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool Store(out int[,] indices)
+    {
+        if (canDrop)
+        {
+            indices = new int[0, 0];
+            return false;
+        }
+
+        indices = new int[4, 2];
+
+        int storeIndex = 0;
+        for(int i = 0; i < minoExists.GetLength(0); ++i)
+        {
+            for(int j = 0; j < minoExists.GetLength(1); ++j)
+            {
+                if(minoExists[i, j])
+                {
+                    indices[storeIndex, 0] = row + i;
+                    indices[storeIndex, 1] = col + j;
+                    storeIndex++;
+                }
+            }
+        }
+
+        return true;
     }
 }
