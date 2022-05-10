@@ -37,6 +37,15 @@ public class Tetramino : MonoBehaviour
         {
             float deltaTime = Time.deltaTime;
 
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                RotateLeft();
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                RotateRight();
+            }
+
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 MoveLeft();
@@ -171,6 +180,16 @@ public class Tetramino : MonoBehaviour
         }
     }
 
+    void RotateLeft()
+    {
+
+    }
+
+    void RotateRight()
+    {
+
+    }
+
     void Init(int size, float scale, int initRow, int initCol, bool[,] board)
     {
         this.scale = scale;
@@ -207,14 +226,14 @@ public class Tetramino : MonoBehaviour
 
     public void InitAsO(float scale, int initRow, int initCol, bool[,] board)
     {
-        Init(3, scale, initRow, initCol, board);
+        Init(2, scale, initRow, initCol, board);
 
+        minoExists[0, 0] = true;
         minoExists[0, 1] = true;
-        minoExists[0, 2] = true;
+        minoExists[1, 0] = true;
         minoExists[1, 1] = true;
-        minoExists[1, 2] = true;
 
-        InstantiateMinos(new Vector2(-tileSize, tileSize), Color.yellow);
+        InstantiateMinos(new Vector2(-0.5f * tileSize, 0.5f * tileSize), Color.yellow);
     }
 
     public void InitAsI(float scale, int initRow, int initCol, bool[,] board)
