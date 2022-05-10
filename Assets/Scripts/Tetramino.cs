@@ -12,14 +12,26 @@ public class Tetramino : MonoBehaviour
     float scale;
     float tileSize = 1f;
 
+    Vector3 pos;
+
+    float dropTime = 0.55f;
+    float curTime = 0;
+
     void Start()
     {
-
+        pos = transform.position;
     }
 
     void Update()
     {
-        
+        float deltaTime = Time.deltaTime;
+        curTime += deltaTime;
+        if(curTime >= dropTime)
+        {
+            pos.y -= tileSize;
+            curTime = 0;
+        }
+        transform.position = pos;
     }
 
     void Init(int size, float scale)
