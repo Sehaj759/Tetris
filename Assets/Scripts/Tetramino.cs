@@ -182,12 +182,34 @@ public class Tetramino : MonoBehaviour
 
     void RotateLeft()
     {
+        int n = minoExists.GetLength(0);
+        bool[,] temp = new bool[n, n];
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                temp[i, j] = minoExists[j, n - i - 1];
+            }
+        }
 
+        minoExists = temp;
+        SetMinoPositions(new Vector2());
     }
 
     void RotateRight()
     {
+        int n = minoExists.GetLength(0);
+        bool[,] temp = new bool[n, n];
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                temp[i, j] = minoExists[n - j - 1, i];
+            }
+        }
 
+        minoExists = temp;
+        SetMinoPositions(new Vector2());
     }
 
     void Init(int size, float scale, int initRow, int initCol, bool[,] board)
