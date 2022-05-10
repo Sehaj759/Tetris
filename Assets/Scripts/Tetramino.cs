@@ -143,8 +143,25 @@ public class Tetramino : MonoBehaviour
 
             if ((row + bottomRow) < board.GetLength(0) - 1)
             {
-                pos.y -= scale * tileSize;
-                row++;
+                for(int c = 0; c < minoExists.GetLength(1); ++c)
+                {
+                    for(int r = minoExists.GetLength(0) - 1; r >= 0; --r)
+                    {
+                        if(minoExists[r, c] && board[row + r + 1, col + c])
+                        {
+                            canDrop = false;
+                            break;
+                        }
+                    }
+                    if (!canDrop)
+                        break;
+                }
+
+                if (canDrop)
+                {
+                    pos.y -= scale * tileSize;
+                    row++;
+                }
             }
             else
             {
