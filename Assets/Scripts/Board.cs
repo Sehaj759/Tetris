@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +16,8 @@ public class Board : MonoBehaviour
     Vector2 topLeft = new Vector2(-2.0f, 5.75f);
     float tileSize = 1f;
 
+    float posOffset;
+
     int nCols = 10;
     int nRows = 22; // 1st and 2nd row are the buffer rows where the tetraminos will be initially created
 
@@ -23,11 +25,14 @@ public class Board : MonoBehaviour
     bool[,] minoExists;
     Tetramino curPiece;
 
+    int qIndex;
+    int[] instantiateQueue;
+
     void Start()
     {
         board = new Mino[nRows, nCols];
         minoExists = new bool[nRows, nCols];
-        float posOffset = tileSize * tileScale;
+        posOffset = tileSize * tileScale;
 
         float y = topLeft.y;
         for(int i = 0; i < nRows; ++i)
@@ -45,10 +50,10 @@ public class Board : MonoBehaviour
             y -= posOffset;
         }
 
-        int row = 3;
-        int col = 1;
-        curPiece = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + col * posOffset, topLeft.y - row * posOffset, 0), Quaternion.identity);
-        curPiece.InitAsT(tileScale, row, col, minoExists);
+        qIndex = 7;
+        instantiateQueue = new int[7] { 0, 1, 2, 3, 4, 5, 6 };
+
+        InstantiateTetraMino();
     }
 
     
@@ -63,9 +68,59 @@ public class Board : MonoBehaviour
                 int col = storeIndices[i, 1];
                 minoExists[row, col] = true;
                 board[row, col].MinoColor = curPiece.TetraMinoColor;
-                curPiece.gameObject.SetActive(false);
-                Destroy(curPiece);
             }
+
+            curPiece.gameObject.SetActive(false);
+            Destroy(curPiece);
+            InstantiateTetraMino();
         }
+    }
+
+    void InstantiateTetraMino()
+    {
+        if(qIndex >= instantiateQueue.Length)
+        {
+            System.Random rng = new System.Random();
+            int n = instantiateQueue.Length;
+            while (n > 1)
+            {
+                int k = rng.Next(n--);
+                int temp = instantiateQueue[n];
+                instantiateQueue[n] = instantiateQueue[k];
+                instantiateQueue[k] = temp;
+            }
+            qIndex = 0;
+        }
+
+        int row = 3;
+        int col = 1;
+        curPiece = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + col * posOffset, topLeft.y - row * posOffset, 0), Quaternion.identity);
+
+        switch (qIndex)
+        {
+            case 0:
+                curPiece.InitAsO(tileScale, row, col, minoExists);
+                break;
+            case 1:
+                curPiece.InitAsI(tileScale, row, col, minoExists);
+                break;
+            case 2:
+                curPiece.InitAsT(tileScale, row, col, minoExists);
+                break;
+            case 3:
+                curPiece.InitAsL(tileScale, row, col, minoExists);
+                break;
+            case 4:
+                curPiece.InitAsJ(tileScale, row, col, minoExists);
+                break;
+            case 5:
+                curPiece.InitAsS(tileScale, row, col, minoExists);
+                break;
+            case 6:
+                curPiece.InitAsZ(tileScale, row, col, minoExists);
+                break;
+        }
+
+        qIndex++;
     }
 }
