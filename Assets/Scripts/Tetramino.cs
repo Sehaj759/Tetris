@@ -75,7 +75,7 @@ public class Tetramino : MonoBehaviour
             }
         }
 
-        if ((col - leftCol) > 0)
+        if ((col + leftCol) > 0)
         {
             pos.x -= scale * tileSize;
             col--;
