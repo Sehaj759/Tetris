@@ -13,6 +13,9 @@ public class Board : MonoBehaviour
     [SerializeField]
     float tileScale;
 
+    [SerializeField]
+    GameObject gameOverText;
+
     Vector2 topLeft = new Vector2(-2.0f, 5.75f);
     float tileSize = 1f;
 
@@ -30,6 +33,8 @@ public class Board : MonoBehaviour
 
     int qIndex;
     int[] instantiateQueue;
+
+    bool gameOver = false;
 
     void Start()
     {
@@ -62,28 +67,39 @@ public class Board : MonoBehaviour
     
     void Update()
     {
-        int[,] storeIndices;
-        if (curPiece && curPiece.Store(out storeIndices))
+        if (!gameOver)
         {
-            // Row corresponding to the smallest index where the current piece was stored
-            int storeRow = 22;
-            for (int i = 0; i < storeIndices.GetLength(0); ++i)
+            int[,] storeIndices;
+            if (curPiece && curPiece.Store(out storeIndices))
             {
-                int row = storeIndices[i, 0];
-                int col = storeIndices[i, 1];
-                minoExists[row, col] = true;
-                board[row, col].MinoColor = curPiece.TetraMinoColor;
+                // Row corresponding to the smallest index where the current piece was stored
+                int storeRow = 22;
+                for (int i = 0; i < storeIndices.GetLength(0); ++i)
+                {
+                    int row = storeIndices[i, 0];
+                    int col = storeIndices[i, 1];
+                    minoExists[row, col] = true;
+                    board[row, col].MinoColor = curPiece.TetraMinoColor;
 
-                if (row < storeRow)
-                    storeRow = row;
+                    if (row < storeRow)
+                        storeRow = row;
+                }
+
+                curPiece.gameObject.SetActive(false);
+                Destroy(curPiece);
+
+                gameOver = storeRow <= 1;
+
+                if (!gameOver)
+                {
+                    CheckRowComplete(storeRow);
+                    InstantiateTetraMino();
+                }
+                else
+                {
+                    gameOverText.SetActive(true);
+                }
             }
-
-            curPiece.gameObject.SetActive(false);
-            Destroy(curPiece);
-
-            CheckRowComplete(storeRow);
-
-            InstantiateTetraMino();
         }
     }
 
