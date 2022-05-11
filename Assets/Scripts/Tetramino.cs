@@ -61,30 +61,25 @@ public class Tetramino : MonoBehaviour
         }
     }
 
-    void MoveLeft()
+    bool OutOfBounds(ref bool[,] temp, int testRow, int testCol)
     {
-        // Find LeftMost Column in minoExists that has minos
-        int leftCol = 0;
-        for(int c = 0; c < minoExists.GetLength(1); ++c)
+        // check if new orientation puts the tetramino out of bounds
+        for (int i = 0; i < temp.GetLength(0); ++i)
         {
-            bool hasMino = false;
-            for(int r = 0; r < minoExists.GetLength(0); ++r)
+            for (int j = 0; j < temp.GetLength(1); ++j)
             {
-                if(minoExists[r, c])
+                if (temp[i, j] && ((testCol + j) < 0 || (testCol + j) >= board.GetLength(1) || (testRow + i) >= board.GetLength(0) || board[testRow + i, testCol + j]))
                 {
-                    hasMino = true;
-                    break;
+                    return true;
                 }
             }
-
-            if (hasMino)
-            {
-                leftCol = c;
-                break;
-            }
         }
+        return false;
+    }
 
-        if ((col + leftCol) > 0)
+    void MoveLeft()
+    {
+        if (!OutOfBounds(ref minoExists, row, col - 1))
         {
             pos.x -= scale * tileSize;
             col--;
@@ -93,28 +88,7 @@ public class Tetramino : MonoBehaviour
 
     void MoveRight()
     {
-        // Find RightMost Column in minoExists that has minos
-        int rightCol = minoExists.GetLength(1) - 1;
-        for (int c = minoExists.GetLength(1) - 1; c >= 0 ; --c)
-        {
-            bool hasMino = false;
-            for (int r = 0; r < minoExists.GetLength(0); ++r)
-            {
-                if (minoExists[r, c])
-                {
-                    hasMino = true;
-                    break;
-                }
-            }
-
-            if (hasMino)
-            {
-                rightCol = c;
-                break;
-            }
-        }
-
-        if ((col + rightCol) < board.GetLength(1) - 1)
+        if (!OutOfBounds(ref minoExists, row, col + 1))
         {
             pos.x += scale * tileSize;
             col++;
@@ -129,53 +103,13 @@ public class Tetramino : MonoBehaviour
         curTime += deltaTime;
         if (curTime >= dropTime)
         {
-            // Find Botoom most Row in minoExists that has minos
-            int bottomRow = minoExists.GetLength(0) - 1;
-            for (int r = minoExists.GetLength(0) - 1; r >= 0; --r)
+            canDrop = !OutOfBounds(ref minoExists, row + 1, col);
+            if (canDrop)
             {
-                bool hasMino = false;
-                for (int c = 0; c < minoExists.GetLength(1); ++c)
-                {
-                    if (minoExists[r, c])
-                    {
-                        hasMino = true;
-                        break;
-                    }
-                }
-
-                if (hasMino)
-                {
-                    bottomRow = r;
-                    break;
-                }
+                pos.y -= scale * tileSize;
+                row++;
             }
 
-            if ((row + bottomRow) < board.GetLength(0) - 1)
-            {
-                for(int c = 0; c < minoExists.GetLength(1); ++c)
-                {
-                    for(int r = minoExists.GetLength(0) - 1; r >= 0; --r)
-                    {
-                        if(minoExists[r, c] && board[row + r + 1, col + c])
-                        {
-                            canDrop = false;
-                            break;
-                        }
-                    }
-                    if (!canDrop)
-                        break;
-                }
-
-                if (canDrop)
-                {
-                    pos.y -= scale * tileSize;
-                    row++;
-                }
-            }
-            else
-            {
-                canDrop = false;
-            }
             curTime = 0;
         }
     }
@@ -192,24 +126,7 @@ public class Tetramino : MonoBehaviour
             }
         }
 
-        // check if new orientation puts the tetramino out of bounds
-        bool outOfBounds = false;
-
-        for(int i = 0; i < temp.GetLength(0); ++i)
-        {
-            for(int j = 0; j < temp.GetLength(1); ++j)
-            {
-                if(temp[i, j] && ((col + j) < 0 || (col + j) >= board.GetLength(1) || board[row + i, col + j]))
-                {
-                    outOfBounds = true;
-                    break;
-                }
-            }
-            if (outOfBounds)
-                break;
-        }
-
-        if (!outOfBounds)
+        if (!OutOfBounds(ref temp, row, col))
         {
             minoExists = temp;
             SetMinoPositions();
@@ -228,24 +145,7 @@ public class Tetramino : MonoBehaviour
             }
         }
 
-        // check if new orientation puts the tetramino out of bounds
-        bool outOfBounds = false;
-
-        for (int i = 0; i < temp.GetLength(0); ++i)
-        {
-            for (int j = 0; j < temp.GetLength(1); ++j)
-            {
-                if (temp[i, j] && ((col + j) < 0 || (col + j) >= board.GetLength(1) || board[row + i, col + j]))
-                {
-                    outOfBounds = true;
-                    break;
-                }
-            }
-            if (outOfBounds)
-                break;
-        }
-
-        if (!outOfBounds)
+        if (!OutOfBounds(ref temp, row, col))
         {
             minoExists = temp;
             SetMinoPositions();
