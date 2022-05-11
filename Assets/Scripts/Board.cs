@@ -21,6 +21,9 @@ public class Board : MonoBehaviour
     int nCols = 10;
     int nRows = 22; // 1st and 2nd row are the buffer rows where the tetraminos will be initially created
 
+    int startRow = 0;
+    int startCol = 4;
+
     Mino[,] board;
     bool[,] minoExists;
     Tetramino curPiece;
@@ -133,32 +136,30 @@ public class Board : MonoBehaviour
             qIndex = 0;
         }
 
-        int row = 3;
-        int col = 1;
-        curPiece = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + col * posOffset, topLeft.y - row * posOffset, 0), Quaternion.identity);
+        curPiece = Instantiate(tetraminoPrefab, new Vector3(topLeft.x + startCol * posOffset, topLeft.y - startRow * posOffset, 0), Quaternion.identity);
 
         switch (instantiateQueue[qIndex])
         {
             case 0:
-                curPiece.InitAsO(tileScale, row, col, minoExists);
+                curPiece.InitAsO(tileScale, startRow, startCol, minoExists);
                 break;
             case 1:
-                curPiece.InitAsI(tileScale, row, col, minoExists);
+                curPiece.InitAsI(tileScale, startRow, startCol, minoExists);
                 break;
             case 2:
-                curPiece.InitAsT(tileScale, row, col, minoExists);
+                curPiece.InitAsT(tileScale, startRow, startCol, minoExists);
                 break;
             case 3:
-                curPiece.InitAsL(tileScale, row, col, minoExists);
+                curPiece.InitAsL(tileScale, startRow, startCol, minoExists);
                 break;
             case 4:
-                curPiece.InitAsJ(tileScale, row, col, minoExists);
+                curPiece.InitAsJ(tileScale, startRow, startCol, minoExists);
                 break;
             case 5:
-                curPiece.InitAsS(tileScale, row, col, minoExists);
+                curPiece.InitAsS(tileScale, startRow, startCol, minoExists);
                 break;
             case 6:
-                curPiece.InitAsZ(tileScale, row, col, minoExists);
+                curPiece.InitAsZ(tileScale, startRow, startCol, minoExists);
                 break;
         }
 
