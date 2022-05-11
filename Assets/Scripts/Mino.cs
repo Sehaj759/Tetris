@@ -11,7 +11,7 @@ public class Mino : MonoBehaviour
         set
         {
             color = value;
-            bodySprite.color = color;
+            bodySprite.color = new Color(color.r, color.g, color.b, 1.0f);
         } 
     }
 

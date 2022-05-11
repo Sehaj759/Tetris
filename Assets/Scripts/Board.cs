@@ -62,17 +62,58 @@ public class Board : MonoBehaviour
         int[,] storeIndices;
         if (curPiece && curPiece.Store(out storeIndices))
         {
-            for(int i = 0; i < storeIndices.GetLength(0); ++i)
+            // Row corresponding to the smallest index where the current piece was stored
+            int storeRow = 22;
+            for (int i = 0; i < storeIndices.GetLength(0); ++i)
             {
                 int row = storeIndices[i, 0];
                 int col = storeIndices[i, 1];
                 minoExists[row, col] = true;
                 board[row, col].MinoColor = curPiece.TetraMinoColor;
+
+                if (row < storeRow)
+                    storeRow = row;
             }
 
             curPiece.gameObject.SetActive(false);
             Destroy(curPiece);
+
+            CheckRowComplete(storeRow);
+
             InstantiateTetraMino();
+        }
+    }
+
+    void CheckRowComplete(int storeRow)
+    {
+        for(int row = storeRow; row < minoExists.GetLength(0); ++row)
+        {
+            bool rowIsComplete = true;
+            for(int col = 0; col < minoExists.GetLength(1); ++col)
+            {
+                rowIsComplete &= minoExists[row, col];
+            }
+
+            if (rowIsComplete)
+            {
+                // clear row
+                for(int col = 0; col < minoExists.GetLength(1); ++col)
+                {
+                    minoExists[row, col] = false;
+                    board[row, col].MinoColor = Color.black;
+                }
+
+                // drop minos above this row down
+
+                for(int r = row; r > 0; --r)
+                {
+                    for(int c = 0; c < minoExists.GetLength(1); ++c)
+                    {
+                        minoExists[r, c] = minoExists[r - 1, c];
+                        board[r, c].MinoColor = board[r - 1, c].MinoColor;
+                    }
+                }
+            }
         }
     }
 
