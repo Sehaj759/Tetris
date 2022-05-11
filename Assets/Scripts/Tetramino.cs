@@ -199,7 +199,7 @@ public class Tetramino : MonoBehaviour
         {
             for(int j = 0; j < temp.GetLength(1); ++j)
             {
-                if(temp[i, j] && !((col + j) >= 0 && (col + j) < board.GetLength(1)))
+                if(temp[i, j] && ((col + j) < 0 || (col + j) >= board.GetLength(1) || board[row + i, col + j]))
                 {
                     outOfBounds = true;
                     break;
@@ -235,7 +235,7 @@ public class Tetramino : MonoBehaviour
         {
             for (int j = 0; j < temp.GetLength(1); ++j)
             {
-                if (temp[i, j] && !((col + j) >= 0 && (col + j) < board.GetLength(1)))
+                if (temp[i, j] && ((col + j) < 0 || (col + j) >= board.GetLength(1) || board[row + i, col + j]))
                 {
                     outOfBounds = true;
                     break;
